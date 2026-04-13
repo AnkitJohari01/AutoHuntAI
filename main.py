@@ -45,6 +45,13 @@ def run_workflow():
 
     for job in jobs:
         print(f"Processing job: {job['title']} at {job['company']}")
+        
+        # New Deduplication logic
+        if tracker_agent.is_already_contacted(job['company']):
+            print(f"Skipping [ALREADY CONTACTED]: {job['company']}")
+            tracker_agent.log(tracker_agent.name, "deduplication", "success", {"company": job['company'], "action": "skip"})
+            continue
+
         tracker_agent.log_job(job['id'], job['title'], job['company'], job['url'])
         
         ext_result = extract_agent.extract_details(job['url'])
@@ -65,6 +72,10 @@ def run_workflow():
                 
                 send_result = email_sender.send_email(hr_email, subject, body)
                 tracker_agent.log(email_sender.name, "send_email", send_result['status'], {"hr_email": hr_email}, send_result.get('error'))
+                
+                if send_result['status'] == 'success':
+                    tracker_agent.log_email_sent(job['id'], hr_email, subject, body)
+                
                 results.append({"job": job['url'], "action": "email", "status": send_result['status']})
             else:
                 tracker_agent.log(email_writer.name, "write_email", "failed", {"job_url": job['url']}, writer_result['error'])
@@ -72,6 +83,10 @@ def run_workflow():
             print("No HR Email found. Applying via browser...")
             apply_result = app_agent.apply_job(job['url'])
             tracker_agent.log(app_agent.name, "apply_job", apply_result['status'], {"job_url": job['url']}, apply_result.get('error'))
+            
+            if apply_result['status'] == 'success':
+                tracker_agent.log_application(job['id'])
+                
             results.append({"job": job['url'], "action": "apply", "status": apply_result['status']})
 
     print("Workflow complete.")

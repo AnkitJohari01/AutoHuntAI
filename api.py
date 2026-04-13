@@ -84,8 +84,10 @@ def fetch_stats():
     try:
         conn = get_db_connection()
         total_jobs = conn.execute("SELECT COUNT(*) FROM jobs").fetchone()[0]
-        emails_sent = conn.execute("SELECT COUNT(*) FROM logs WHERE action='send_email' AND status='success'").fetchone()[0]
-        auto_apps = conn.execute("SELECT COUNT(*) FROM logs WHERE action='apply_job' AND status='success'").fetchone()[0]
+        # Count unique successful emails from the dedicated emails table
+        emails_sent = conn.execute("SELECT COUNT(*) FROM emails WHERE sent_status='success'").fetchone()[0]
+        # Count unique successful browser apps from the dedicated applications table
+        auto_apps = conn.execute("SELECT COUNT(*) FROM applications WHERE status='success'").fetchone()[0]
         conn.close()
         return {"total_jobs": total_jobs, "emails_sent": emails_sent, "auto_apps": auto_apps}
     except Exception as e:
