@@ -1,0 +1,45 @@
+# ========================
+# SECURITY - NEVER COMMIT
+# ========================
+config.py          # Contains Gmail App Password & personal credentials
+data/              # Contains LinkedIn/Naukri browser session cookies
+
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+ahenv/             # Virtual environment
+.env
+*.egg-info/
+dist/
+build/
+
+# ========================
+# Debug / Scratch files
+# ========================
+li_debug.html
+linkedin_debug.html
+linkedin_debug.png
+naukri_debug.html
+naukri_debug.png
+naukri_debug.py
+debug_scraper.py
+test_li.py
+validate_email.py
+check_emails.py
+
+# ========================
+# Frontend
+# ========================
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# ========================
+# OS
+# ========================
+.DS_Store
+Thumbs.db
