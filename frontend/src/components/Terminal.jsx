@@ -9,7 +9,7 @@ export default function Terminal() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/logs');
+        const response = await axios.get(`http://${window.location.hostname}:8000/api/logs`);
         // Backend returns DESC limit 50, reverse to show chronological down
         setLogs(response.data.reverse());
       } catch (err) {}

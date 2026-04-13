@@ -35,13 +35,18 @@ CANDIDATE = {
 ],
     "github": "https://github.com/AnkitJohari01",
     "linkedin": "https://www.linkedin.com/in/ankitjohari-s0217/",
-    "resume": r"D:\Ankit\Ankit_S_Johari.pdf"
+    "resume": os.path.join(os.path.dirname(__file__), "Ankit_S_Johari.pdf")
 }
 
+# Network Configuration
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("API_PORT", 8000))
+
 # Email Configurations
-EMAIL_USER = "ankitjohari171@gmail.com" # fixed typo from gmai.com
+EMAIL_USER = "ankitjohari171@gmail.com" 
 EMAIL_PASS = "yuqc vxtu tnru svmy"
 
-OLLAMA_MODEL = "qwen2.5:0.5b" # Ultra-lite model explicitly configured to prevent total GPU Out-Of-Memory failure
+OLLAMA_MODEL = "qwen2.5:0.5b" 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "jobs.db")
 BROWSER_PROFILE_DIR = os.path.join(os.path.dirname(__file__), "data", "browser_profile")
+
