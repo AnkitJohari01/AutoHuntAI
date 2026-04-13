@@ -10,44 +10,34 @@ class ApplicationAgent:
     def __init__(self):
         self.name = "ApplicationAgent"
 
-    def apply_job(self, job_url):
+    def apply_job(self, page, job_url):
         try:
-            os.makedirs(BROWSER_PROFILE_DIR, exist_ok=True)
-            with sync_playwright() as p:
-                browser = p.chromium.launch_persistent_context(
-                    user_data_dir=BROWSER_PROFILE_DIR, 
-                    headless=False,
-                    slow_mo=100
-                )
-                page = browser.new_page()
-                page.goto(job_url, timeout=60000)
+            page.goto(job_url, timeout=60000)
+            
+            apply_buttons = page.locator("button:has-text('Apply'), button:has-text('Easy Apply')").all()
+            if apply_buttons:
+                for btn in apply_buttons:
+                    if btn.is_visible():
+                        btn.click()
+                        time.sleep(3)
+                        break
                 
-                apply_buttons = page.locator("button:has-text('Apply'), button:has-text('Easy Apply')").all()
-                if apply_buttons:
-                    for btn in apply_buttons:
-                        if btn.is_visible():
-                            btn.click()
-                            time.sleep(3)
-                            break
-                    
-                    for _ in range(5):
-                        time.sleep(2)
-                        next_btns = page.locator("button:has-text('Next'), button:has-text('Review')").all()
-                        if next_btns:
-                            for nb in next_btns:
-                                if nb.is_visible():
-                                    nb.click()
-                                    break
-                        else:
-                            submit_btns = page.locator("button:has-text('Submit application')").all()
-                            if submit_btns:
-                                for sb in submit_btns:
-                                    if sb.is_visible():
-                                        sb.click()
-                                        break
+                for _ in range(5):
+                    time.sleep(2)
+                    next_btns = page.locator("button:has-text('Next'), button:has-text('Review')").all()
+                    if next_btns:
+                        for nb in next_btns:
+                            if nb.is_visible():
+                                nb.click()
                                 break
-
-                browser.close()
+                    else:
+                        submit_btns = page.locator("button:has-text('Submit application')").all()
+                        if submit_btns:
+                            for sb in submit_btns:
+                                if sb.is_visible():
+                                    sb.click()
+                                    break
+                            break
 
             return self._format_response("success", {"application_status": "applied", "job_url": job_url}, None)
         except Exception as e:
