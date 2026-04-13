@@ -30,8 +30,8 @@ A fully automated, **100% free and local** job application platform powered by P
 
 ### 1. Clone & Create Virtual Environment
 ```bash
-git clone https://github.com/AnkitJohari01/Autohunt-AI.git
-cd Autohunt-AI
+git clone https://github.com/AnkitJohari01/AutoHuntAI.git
+cd AutoHuntAI
 python -m venv ahenv
 ahenv\Scripts\activate
 pip install playwright fastapi uvicorn ollama

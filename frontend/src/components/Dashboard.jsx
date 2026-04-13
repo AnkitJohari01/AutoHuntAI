@@ -8,7 +8,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get(`http://${window.location.hostname}:8000/api/stats`);
+        const res = await axios.get('http://127.0.0.1:8000/api/stats');
         setStats(res.data);
       } catch (err) {
         console.error("FastAPI Backend Offline");

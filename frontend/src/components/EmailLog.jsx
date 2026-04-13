@@ -9,7 +9,7 @@ export default function EmailLog() {
   const fetchEmails = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`http://${window.location.hostname}:8000/api/emails`);
+      const res = await axios.get("http://127.0.0.1:8000/api/emails");
       setEmails(res.data);
     } catch (e) {
       setEmails([]);

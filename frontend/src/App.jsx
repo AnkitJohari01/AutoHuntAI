@@ -14,7 +14,7 @@ function App() {
   const startAutomation = async () => {
     try {
       setIsAutomationRunning(true);
-      await axios.post(`http://${window.location.hostname}:8000/api/run`);
+      await axios.post('http://127.0.0.1:8000/api/run');
       // Set a timeout to reset the button eventually
       setTimeout(() => setIsAutomationRunning(false), 20000); 
     } catch (e) {

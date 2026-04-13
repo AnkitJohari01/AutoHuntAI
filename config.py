@@ -35,12 +35,8 @@ CANDIDATE = {
 ],
     "github": "https://github.com/AnkitJohari01",
     "linkedin": "https://www.linkedin.com/in/ankitjohari-s0217/",
-    "resume": os.path.join(os.path.dirname(__file__), "Ankit_S_Johari.pdf")
+    "resume": r"D:\Ankit\Ankit_S_Johari.pdf"
 }
-
-# Network Configuration
-API_HOST = os.getenv("API_HOST", "0.0.0.0")
-API_PORT = int(os.getenv("API_PORT", 8000))
 
 # Email Configurations
 EMAIL_USER = "ankitjohari171@gmail.com" 
