@@ -16,6 +16,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Global lock to prevent overlapping runs
+WORKFLOW_LOCK = False
+
 def get_db_connection():
     if not os.path.exists(DB_PATH):
         raise HTTPException(status_code=404, detail="Database not initialized yet.")
@@ -23,13 +26,26 @@ def get_db_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
+def execute_workflow():
+    """Wrapper to handle the global lock."""
+    global WORKFLOW_LOCK
+    try:
+        run_workflow()
+    finally:
+        WORKFLOW_LOCK = False
+
 @app.get("/api/status")
 def get_status():
-    return {"status": "online"}
+    return {"status": "online", "busy": WORKFLOW_LOCK}
 
 @app.post("/api/run")
 def start_automation(background_tasks: BackgroundTasks):
-    background_tasks.add_task(run_workflow)
+    global WORKFLOW_LOCK
+    if WORKFLOW_LOCK:
+        return {"message": "Automation is already in progress. Please wait for the current run to finish.", "error": True}
+    
+    WORKFLOW_LOCK = True
+    background_tasks.add_task(execute_workflow)
     return {"message": "Automation workflow successfully dispatched"}
 
 @app.get("/api/logs")

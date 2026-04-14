@@ -19,11 +19,24 @@ def is_within_working_hours():
     now_ist = datetime.now(timezone.utc) + ist_offset
     return 7 <= now_ist.hour < 22
 
+def cleanup_browser_locks():
+    """Manually removes Chromium lock files from previous crashes."""
+    lock_file = os.path.join(BROWSER_PROFILE_DIR, "SingletonLock")
+    if os.path.exists(lock_file):
+        try:
+            print(f"Cleaning up stalled browser lock: {lock_file}")
+            os.remove(lock_file)
+        except Exception as e:
+            print(f"Failed to remove lock: {e}. An instance might still be running.")
+
 def run_workflow():
     if not is_within_working_hours():
         print("Outside working hours (7 AM - 10 PM IST). Task queued.")
         return {"status": "queued"}
 
+    print("Cleaning up browser environment...")
+    cleanup_browser_locks()
+    
     print("Starting automated job application...")
 
     search_agent = JobSearchAgent()
@@ -38,12 +51,24 @@ def run_workflow():
         os.makedirs(BROWSER_PROFILE_DIR, exist_ok=True)
         with sync_playwright() as p:
             print("Launching shared browser context...")
-            browser = p.chromium.launch_persistent_context(
-                user_data_dir=BROWSER_PROFILE_DIR, 
-                headless=False,
-                slow_mo=50
-            )
+            try:
+                browser = p.chromium.launch_persistent_context(
+                    user_data_dir=BROWSER_PROFILE_DIR, 
+                    headless=False,
+                    slow_mo=50
+                )
+            except Exception as e:
+                # If it still fails, try one more time without the lock
+                print("Initial launch failed. Retrying after deep cleanup...")
+                cleanup_browser_locks()
+                browser = p.chromium.launch_persistent_context(
+                    user_data_dir=BROWSER_PROFILE_DIR, 
+                    headless=False,
+                    slow_mo=50
+                )
+
             page = browser.new_page()
+            time.sleep(2) # Give browser a moment to settle
 
             tracker_agent.log(search_agent.name, "search_start", "success", {"keywords": "Data Scientist 0-2 years"})
             
