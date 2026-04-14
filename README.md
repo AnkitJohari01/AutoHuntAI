@@ -117,7 +117,41 @@ TrackerAgent  →  Logs everything to SQLite → Dashboard updates
 
 | Dashboard | Live Terminal | Job Vault | Email Log |
 |---|---|---|---|
-| Real-time metrics | Telemetry stream | All discovered jobs | Email dispatch history |
+---
+
+## 🤖 MCP Integration (Conversational Automation)
+
+You can now control AutoHunt AI directly through **Claude Desktop** or other MCP clients.
+
+### 1. Requirements
+Ensure you have the MCP server dependencies installed:
+```bash
+.\ahenv\Scripts\pip install mcp mcp-cli
+```
+
+### 2. Configure Claude Desktop
+Add the following to your `claude_desktop_config.json` (usually in `%APPDATA%\Claude\claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "autohunt": {
+      "command": "python",
+      "args": ["D:/Ankit/Autohunt-AI/mcp_server.py"],
+      "env": {
+        "PYTHONPATH": "D:/Ankit/Autohunt-AI"
+      }
+    }
+  }
+}
+```
+*Note: Ensure the paths above match your actual project location.*
+
+### 3. Usage
+Once configured, restart Claude Desktop. You can now use commands like:
+- "Search for Data Science jobs in Bangalore"
+- "Apply to this job: [link]"
+- "Show me my application stats"
 
 ---
 
